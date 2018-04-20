@@ -1,0 +1,226 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "aws_region": "us-east-1",
+    "azure_client_id": "",
+    "azure_client_secret": "",
+    "azure_storage_account": "",
+    "azure_subscription_id": "",
+    "azure_resource_group": "",
+    "azure_location": "northcentralus",
+    "azure_spn_object_id": "",
+    "gcp_account_file": "",
+    "gcp_project_id": "",
+    "gcp_zone": "us-central1-a"
+  },
+  "builders": [
+    {
+      "name": "AWS-Win2012R2-Base-UMich",
+      "type": "amazon-ebs",
+
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "{{user `aws_region`}}",
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "Windows_Server-2012-R2_RTM-English-64Bit-Base*",
+          "root-device-type": "ebs"
+        },
+        "owners": "amazon",
+        "most_recent": true
+      },
+      "instance_type": "t2.medium",
+      "disable_stop_instance": true,
+
+      "ami_name": "UMich-Windows-2012-R2-Base-{{isotime \"20060102\"}}",
+      "user_data_file": "aws_bootstrap_windows.txt",
+
+      "communicator": "winrm",
+      "winrm_username": "Administrator",
+      "winrm_use_ssl": true,
+      "winrm_insecure": true
+    },
+    {
+      "name": "AWS-Win2016-Base-UMich",
+      "type": "amazon-ebs",
+
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "{{user `aws_region`}}",
+
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "Windows_Server-2016-English-Full-Base*",
+          "root-device-type": "ebs"
+        },
+        "owners": "amazon",
+        "most_recent": true
+      },
+      "instance_type": "t2.medium",
+
+      "ami_name": "UMich-Windows-2016-Base-{{isotime \"20060102\"}}",
+      "user_data_file": "aws_bootstrap_windows.txt",
+
+      "communicator": "winrm",
+      "winrm_username": "Administrator",
+      "winrm_use_ssl": true,
+      "winrm_insecure": true
+    },
+    {
+      "name": "Azure-Win2012R2-Base-UMich",
+      "type": "azure-arm",
+
+      "client_id": "{{user `azure_client_id`}}",
+      "client_secret": "{{user `azure_client_secret`}}",
+      "subscription_id": "{{user `azure_subscription_id`}}",
+      "object_id": "{{user `azure_spn_object_id`}}",
+      "location": " {{user `azure_location`}}",
+
+      "os_type": "Windows",
+      "image_publisher": "MicrosoftWindowsServer",
+      "image_offer": "WindowsServer",
+      "image_sku": "2012-R2-Datacenter-smalldisk",
+      "vm_size": "Standard_A2",
+
+      "managed_image_name": "UMich-Windows-2012-R2-Base-{{isotime \"20060102\"}}",
+      "managed_image_resource_group_name": "{{user `azure_resource_group`}}",
+
+      "communicator": "winrm",
+      "winrm_username": "packer",
+      "winrm_use_ssl": true,
+      "winrm_insecure": true
+    },
+    {
+      "name": "Azure-Win2016-Base-UMich",
+      "type": "azure-arm",
+
+      "client_id": "{{user `azure_client_id`}}",
+      "client_secret": "{{user `azure_client_secret`}}",
+      "subscription_id": "{{user `azure_subscription_id`}}",
+      "object_id": "{{user `azure_spn_object_id`}}",
+      "location": " {{user `azure_location`}}",
+
+      "os_type": "Windows",
+      "image_publisher": "MicrosoftWindowsServer",
+      "image_offer": "WindowsServer",
+      "image_sku": "2016-Datacenter-smalldisk",
+      "vm_size": "Standard_A2",
+
+      "managed_image_name": "UMich-Windows-2016-Base-{{isotime \"20060102\"}}",
+      "managed_image_resource_group_name": "{{user `azure_resource_group`}}",
+
+      "communicator": "winrm",
+      "winrm_username": "packer",
+      "winrm_use_ssl": true,
+      "winrm_insecure": true
+    },
+    {
+      "name": "GCP-Win2012R2-Base-UMich",
+      "type": "googlecompute",
+
+      "account_file": "{{user `gcp_account_file`}}",
+      "project_id": "{{user `gcp_project_id`}}",
+      "zone": "{{user `gcp_zone`}}",
+
+      "source_image_family": "windows-2012-r2",
+      "disk_size": "50",
+      "disk_type": "pd-ssd",
+      "machine_type": "n1-standard-2",
+
+      "image_name": "umich-windows-2012-r2-base-v{{isotime \"20060102\"}}",
+      "image_family": "um-windows-2012-r2",
+      "metadata": {
+        "windows-startup-script-cmd": "winrm quickconfig -quiet & winrm set winrm/config/service/auth @{Basic=\"true\"}"
+      },
+
+      "communicator": "winrm",
+      "winrm_username": "packer",
+      "winrm_use_ssl": true,
+      "winrm_insecure": true
+    },
+    {
+      "name": "GCP-Win2016-Base-UMich",
+      "type": "googlecompute",
+
+      "account_file": "{{user `gcp_account_file`}}",
+      "project_id": "{{user `gcp_project_id`}}",
+      "zone": "{{user `gcp_zone`}}",
+
+      "source_image_family": "windows-2016",
+      "disk_size": "50",
+      "disk_type": "pd-ssd",
+      "machine_type": "n1-standard-2",
+
+      "image_name": "umich-windows-2016-base-v{{isotime \"20060102\"}}",
+      "image_family": "um-windows-2016",
+      "metadata": {
+        "windows-startup-script-cmd": "winrm quickconfig -quiet & winrm set winrm/config/service/auth @{Basic=\"true\"}"
+      },
+
+      "communicator": "winrm",
+      "winrm_username": "packer",
+      "winrm_use_ssl": true,
+      "winrm_insecure": true
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "umich-base-image-playbook/main.yml",
+      "extra_arguments": [
+        "--connection", "packer",
+        "--extra-vars", "ansible_shell_type=powershell ansible_shell_executable=None"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_timeout": "30m"
+    },
+    {
+      "type": "powershell",
+      "inline": ["Throw \"This should not run, it should be overriden!\""],
+      "override": {
+        "AWS-Win2012R2-Base-UMich": {
+          "inline": ["CMD.EXE /C \"`\"C:\\Program Files\\Amazon\\Ec2ConfigService\\ec2config.exe`\" -sysprep\""]
+        },
+        "AWS-Win2016-Base-UMich": {
+          "inline": [
+            "cd C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts", 
+            "./InitializeInstance.ps1 -Schedule",
+            "./SysprepInstance.ps1 -NoShutdown"
+            ]
+        },
+        "Azure-Win2012R2-Base-UMich": {
+          "inline": [
+            "if( Test-Path $Env:SystemRoot\\windows\\system32\\Sysprep\\unattend.xml ){ rm $Env:SystemRoot\\windows\\system32\\Sysprep\\unattend.xml -Force}",
+            "& $env:SystemRoot\\System32\\Sysprep\\Sysprep.exe /oobe /generalize /quiet /quit",
+            "while($true) { $imageState = Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\State | Select ImageState; if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') { Write-Output $imageState.ImageState; Start-Sleep -s 10  } else { break } }"
+          ]
+        },
+        "Azure-Win2016-Base-UMich": {
+          "inline": [
+            "if( Test-Path $Env:SystemRoot\\windows\\system32\\Sysprep\\unattend.xml ){ rm $Env:SystemRoot\\windows\\system32\\Sysprep\\unattend.xml -Force}",
+            "& $env:SystemRoot\\System32\\Sysprep\\Sysprep.exe /oobe /generalize /quiet /quit",
+            "while($true) { $imageState = Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\State | Select ImageState; if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') { Write-Output $imageState.ImageState; Start-Sleep -s 10  } else { break } }"
+          ]
+        },
+        "GCP-Win2012R2-Base-UMich": {
+          "inline": ["GCESysprep"]
+        },
+        "GCP-Win2016-Base-UMich": {
+          "inline": ["GCESysprep"]
+        }
+      }
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "manifest"
+    }
+  ]
+}
+
+
