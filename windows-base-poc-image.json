@@ -174,28 +174,14 @@
       "type": "powershell",
       "inline": [
         "\"[{{build_name}}]\" > C:\\Windows\\Temp\\host",
-        "$publicipv4 = Invoke-WebRequest -Uri http://169.254.169.254/latest/meta-data/public-ipv4",
-        "$publicipv4.Content >> C:\\Windows\\Temp\\host"
-      ],
-      "only": [ "AWS-Win2012R2-Base-UMich", "AWS-Win2016-Base-UMich"]
-    },
-    {
-      "type": "powershell",
-      "inline": [
-        "\"[{{build_name}}]\" > C:\\Windows\\Temp\\host",
-        "$publicipv4 = Invoke-WebRequest -Uri \"http://169.254.169.254/metadata/instance/network/interface/0/ipv4/ipAddress/0/publicIpAddress?api-version=2017-12-01&format=text\"",
-        "$publicipv4.Content >> C:\\Windows\\Temp\\host"
-      ],
-      "only": [ "Azure-Win2012R2-Base-UMich", "Azure-Win2016-Base-UMich"]
-    },
-    {
-      "type": "powershell",
-      "inline": [
-        "\"[{{build_name}}]\" > C:\\Windows\\Temp\\host",
-        "$publicipv4 = Invoke-WebRequest -Uri http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip -Headers @{\"Metadata-Flavor\" = \"Google\"",
-        "[system.Text.Encoding]::UTF8.GetString($publicipv4.RawContentStream.ToArray()) >> C:\\Windows\\Temp\\host"
-      ],
-      "only": [ "GCP-Win2012R2-Base-UMich", "GCP-Win2016-Base-UMich"]
+        "switch ($env:PACKER_BUILDER_TYPE) {",
+        "  \"amazon*\" { $publicipv4 = Invoke-WebRequest -Uri http://169.254.169.254/latest/meta-data/public-ipv4",
+        "     $publicipv4.Content >> C:\\Windows\\Temp\\host }",
+        "  \"azure*\" { $publicipv4 = Invoke-WebRequest -Uri \"http://169.254.169.254/metadata/instance/network/interface/0/ipv4/ipAddress/0/publicIpAddress?api-version=2017-12-01&format=text\"",
+        "     $publicipv4.Content >> C:\\Windows\\Temp\\host }",
+        "  \"googlecomputeengine\" { $publicipv4 = Invoke-WebRequest -Uri http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip -Headers @{\"Metadata-Flavor\" = \"Google\"}",
+        "     [system.Text.Encoding]::UTF8.GetString($publicipv4.RawContentStream.ToArray()) >> C:\\Windows\\Temp\\host }"
+      ]
     },
     {
       "type": "file",
