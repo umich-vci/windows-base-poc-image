@@ -13,8 +13,6 @@ winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="0"}'
 winrm set winrm/config '@{MaxTimeoutms="7200000"}'
 winrm set winrm/config/service '@{AllowUnencrypted="false"}'
 winrm set winrm/config/service '@{MaxConcurrentOperationsPerUser="12000"}'
-winrm set winrm/config/service/auth '@{Basic="true"}'
-winrm set winrm/config/client/auth '@{Basic="true"}'
 
 # Configure UAC to allow privilege elevation in remote shells
 $Key = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System'

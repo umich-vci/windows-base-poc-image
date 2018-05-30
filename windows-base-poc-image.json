@@ -42,7 +42,8 @@
       "communicator": "winrm",
       "winrm_username": "{{user `aws_winrm_user`}}",
       "winrm_use_ssl": true,
-      "winrm_insecure": true
+      "winrm_insecure": true,
+      "winrm_use_ntlm": true
     },
     {
       "name": "AWS-Win2016-Base-UMich",
@@ -69,7 +70,8 @@
       "communicator": "winrm",
       "winrm_username": "{{user `aws_winrm_user`}}",
       "winrm_use_ssl": true,
-      "winrm_insecure": true
+      "winrm_insecure": true,
+      "winrm_use_ntlm": true
     },
     {
       "name": "Azure-Win2012R2-Base-UMich",
@@ -92,7 +94,8 @@
       "communicator": "winrm",
       "winrm_username": "{{user `azure_winrm_user`}}",
       "winrm_use_ssl": true,
-      "winrm_insecure": true
+      "winrm_insecure": true,
+      "winrm_use_ntlm": true
     },
     {
       "name": "Azure-Win2016-Base-UMich",
@@ -115,7 +118,8 @@
       "communicator": "winrm",
       "winrm_username": "{{user `azure_winrm_user`}}",
       "winrm_use_ssl": true,
-      "winrm_insecure": true
+      "winrm_insecure": true,
+      "winrm_use_ntlm": true
     },
     {
       "name": "GCP-Win2012R2-Base-UMich",
@@ -133,13 +137,14 @@
       "image_name": "umich-windows-2012-r2-base-v{{isotime \"20060102\"}}",
       "image_family": "um-windows-2012-r2",
       "metadata": {
-        "windows-startup-script-cmd": "winrm quickconfig -quiet & winrm set winrm/config/service/auth @{Basic=\"true\"}"
+        "windows-startup-script-cmd": "winrm quickconfig -quiet"
       },
 
       "communicator": "winrm",
       "winrm_username": "{{user `gcp_winrm_user`}}",
       "winrm_use_ssl": true,
-      "winrm_insecure": true
+      "winrm_insecure": true,
+      "winrm_use_ntlm": true
     },
     {
       "name": "GCP-Win2016-Base-UMich",
@@ -157,13 +162,14 @@
       "image_name": "umich-windows-2016-base-v{{isotime \"20060102\"}}",
       "image_family": "um-windows-2016",
       "metadata": {
-        "windows-startup-script-cmd": "winrm quickconfig -quiet & winrm set winrm/config/service/auth @{Basic=\"true\"}"
+        "windows-startup-script-cmd": "winrm quickconfig -quiet"
       },
 
       "communicator": "winrm",
       "winrm_username": "{{user `gcp_winrm_user`}}",
       "winrm_use_ssl": true,
-      "winrm_insecure": true
+      "winrm_insecure": true,
+      "winrm_use_ntlm": true
     }
   ],
   "provisioners": [
@@ -195,7 +201,7 @@
         "  googlecompute) ANSIBLE_USER={{user `gcp_winrm_user`}};;",
         "esac",
         "dos2unix poc-base-image-playbook/{{build_name}}-host",
-        "ansible-playbook -v -i poc-base-image-playbook/{{build_name}}-host --extra-vars \"ansible_user=$ANSIBLE_USER ansible_password={{.WinRMPassword}} ansible_become_pass={{.WinRMPassword}} ansible_port=5986 ansible_connection=winrm ansible_winrm_server_cert_validation=ignore\" poc-base-image-playbook/main.yml"
+        "ansible-playbook -v -i poc-base-image-playbook/{{build_name}}-host --extra-vars \"ansible_user=$ANSIBLE_USER ansible_password={{.WinRMPassword}} ansible_become_pass={{.WinRMPassword}} ansible_port=5986 ansible_connection=winrm ansible_winrm_server_cert_validation=ignore ansible_winrm_transport=ntlm\" poc-base-image-playbook/main.yml"
       ]
     },
     {
