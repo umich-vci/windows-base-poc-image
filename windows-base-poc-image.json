@@ -10,7 +10,6 @@
     "azure_subscription_id": "",
     "azure_resource_group": "",
     "azure_location": "northcentralus",
-    "azure_spn_object_id": "",
     "azure_winrm_user": "packer",
     "gcp_account_file": "",
     "gcp_project_id": "",
@@ -79,7 +78,6 @@
       "client_id": "{{user `azure_client_id`}}",
       "client_secret": "{{user `azure_client_secret`}}",
       "subscription_id": "{{user `azure_subscription_id`}}",
-      "object_id": "{{user `azure_spn_object_id`}}",
       "location": " {{user `azure_location`}}",
 
       "os_type": "Windows",
@@ -103,7 +101,6 @@
       "client_id": "{{user `azure_client_id`}}",
       "client_secret": "{{user `azure_client_secret`}}",
       "subscription_id": "{{user `azure_subscription_id`}}",
-      "object_id": "{{user `azure_spn_object_id`}}",
       "location": " {{user `azure_location`}}",
 
       "os_type": "Windows",
