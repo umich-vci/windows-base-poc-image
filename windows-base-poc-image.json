@@ -174,7 +174,7 @@
       "type": "powershell",
       "inline": [
         "\"[{{build_name}}]\" > C:\\Windows\\Temp\\host",
-        "switch ($env:PACKER_BUILDER_TYPE) {",
+        "switch -Wildcard ($env:PACKER_BUILDER_TYPE) {",
         "  \"amazon*\" { $publicipv4 = Invoke-WebRequest -Uri http://169.254.169.254/latest/meta-data/public-ipv4",
         "     $publicipv4.Content >> C:\\Windows\\Temp\\host }",
         "  \"azure*\" { $publicipv4 = Invoke-WebRequest -Uri \"http://169.254.169.254/metadata/instance/network/interface/0/ipv4/ipAddress/0/publicIpAddress?api-version=2017-12-01&format=text\"",
