@@ -136,9 +136,8 @@
       "image_name": "umich-windows-2012-r2-base-v{{isotime \"20060102\"}}",
       "image_family": "um-windows-2012-r2",
       "metadata": {
-        "windows-startup-script-cmd": "winrm quickconfig -quiet"
+        "windows-startup-script-ps1": "Enable-PSRemoting -Force; $Cert = New-SelfSignedCertificate -CertstoreLocation Cert:\\LocalMachine\\My -DnsName \"packer\"; New-Item -Path WSMan:\\LocalHost\\Listener -Transport HTTPS -Address * -CertificateThumbPrint $Cert.Thumbprint -Force; Stop-Service -Name WinRM; Set-Service -Name WinRM -StartupType Automatic; New-NetFirewallRule -DisplayName \"Windows Remote Management (HTTPS-In)\" -Name \"Windows Remote Management (HTTPS-In)\" -Profile Any -LocalPort 5986 -Protocol TCP; Start-Service -Name WinRM"
       },
-
       "communicator": "winrm",
       "winrm_username": "packer",
       "winrm_use_ssl": true,
@@ -161,7 +160,7 @@
       "image_name": "umich-windows-2016-base-v{{isotime \"20060102\"}}",
       "image_family": "um-windows-2016",
       "metadata": {
-        "windows-startup-script-cmd": "winrm quickconfig -quiet"
+        "windows-startup-script-ps1": "Enable-PSRemoting -Force; $Cert = New-SelfSignedCertificate -CertstoreLocation Cert:\\LocalMachine\\My -DnsName \"packer\"; New-Item -Path WSMan:\\LocalHost\\Listener -Transport HTTPS -Address * -CertificateThumbPrint $Cert.Thumbprint -Force; Get-ChildItem WSMan:\\Localhost\\listener | Where -Property Keys -eq \"Transport=HTTP\" | Remove-Item -Recurse; Disable-NetFirewallRule -DisplayName \"Windows Remote Management (HTTP-In)\"; Stop-Service -Name WinRM; Set-Service -Name WinRM -StartupType Automatic; New-NetFirewallRule -DisplayName \"Windows Remote Management (HTTPS-In)\" -Name \"Windows Remote Management (HTTPS-In)\" -Profile Any -LocalPort 5986 -Protocol TCP; Start-Service -Name WinRM"
       },
 
       "communicator": "winrm",

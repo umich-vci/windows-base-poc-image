@@ -1,28 +1,18 @@
 <powershell>
-# First, make sure WinRM can't be connected to
-Set-NetFirewallRule -Enabled True -Action Block -DisplayName "Windows Remote Management (HTTP-In)"
+#Enable PowerShell Remoting and WinRM
+Enable-PSRemoting -Force
 
-# Delete any existing WinRM listeners
-winrm delete winrm/config/listener?Address=*+Transport=HTTP  2>$Null
-winrm delete winrm/config/listener?Address=*+Transport=HTTPS 2>$Null
-
-# Create a new WinRM listener and configure
+# Create a new WinRM HTTPS listener and configure
 $Cert = New-SelfSignedCertificate -CertstoreLocation Cert:\LocalMachine\My -DnsName "packer"
 New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address * -CertificateThumbPrint $Cert.Thumbprint -Force
-winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="0"}'
-winrm set winrm/config '@{MaxTimeoutms="7200000"}'
-winrm set winrm/config/service '@{AllowUnencrypted="false"}'
-winrm set winrm/config/service '@{MaxConcurrentOperationsPerUser="12000"}'
 
-# Configure UAC to allow privilege elevation in remote shells
-$Key = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System'
-$Setting = 'LocalAccountTokenFilterPolicy'
-Set-ItemProperty -Path $Key -Name $Setting -Value 1 -Force
+#Remove the HTTP listener created by Enable-PSRemoting and disable in Firewall
+Get-ChildItem WSMan:\Localhost\listener | Where -Property Keys -eq "Transport=HTTP" | Remove-Item -Recurse
+Disable-NetFirewallRule -DisplayName "Windows Remote Management (HTTP-In)"
 
 # Configure and restart the WinRM Service; Enable the required firewall exception
 Stop-Service -Name WinRM
 Set-Service -Name WinRM -StartupType Automatic
 New-NetFirewallRule -DisplayName "Windows Remote Management (HTTPS-In)" -Name "Windows Remote Management (HTTPS-In)" -Profile Any -LocalPort 5986 -Protocol TCP
 Start-Service -Name WinRM
-
 </powershell>
