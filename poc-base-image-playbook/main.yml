@@ -7,6 +7,7 @@
       win_feature:
         name: FS-SMB1
         state: absent
+        become: yes
 
     - name: Install all security, critical, rollup, and definition updates
       win_updates:
@@ -16,3 +17,4 @@
           - UpdateRollups
           - DefinitionUpdates
         state: installed
+        become: yes
