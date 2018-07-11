@@ -202,7 +202,7 @@
         "  azure*) ANSIBLE_USER={{user `azure_winrm_user`}};;",
         "  googlecompute) ANSIBLE_USER={{user `gcp_winrm_user`}};;",
         "esac",
-        "ansible-playbook -v -i poc-base-image-playbook/{{build_name}}-host --extra-vars \"ansible_user=$ANSIBLE_USER ansible_password={{.WinRMPassword}} ansible_become_pass={{.WinRMPassword}} ansible_port=5986 ansible_connection=winrm ansible_winrm_server_cert_validation=ignore ansible_winrm_transport=ntlm\" poc-base-image-playbook/main.yml"
+        "ansible-playbook -v -i poc-base-image-playbook/{{build_name}}-host --extra-vars 'ansible_user=$ANSIBLE_USER ansible_password={{.WinRMPassword}} ansible_become_pass={{.WinRMPassword}} ansible_port=5986 ansible_connection=winrm ansible_winrm_server_cert_validation=ignore ansible_winrm_transport=ntlm' poc-base-image-playbook/main.yml"
       ]
     },
     {
