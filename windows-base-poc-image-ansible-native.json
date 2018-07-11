@@ -34,6 +34,7 @@
         "most_recent": true
       },
       "instance_type": "t2.medium",
+      "enable_t2_unlimited": true,
       "disable_stop_instance": true,
 
       "ami_name": "UMich-Windows-2012-R2-Base-{{isotime \"20060102\"}}",
@@ -63,6 +64,7 @@
         "most_recent": true
       },
       "instance_type": "t2.medium",
+      "enable_t2_unlimited": true,
 
       "ami_name": "UMich-Windows-2016-Base-{{isotime \"20060102\"}}",
       "user_data_file": "aws_bootstrap_windows.txt",
