@@ -181,8 +181,8 @@
         "  \"azure*\" { $publicipv4 = Invoke-RestMethod -Method GET -Uri \"http://169.254.169.254/metadata/instance/network/interface/0/ipv4/ipAddress/0/publicIpAddress?api-version=2017-12-01&format=text\" -Headers @{\"Metadata\" = \"true\"} }",
         "  \"googlecompute\" { $publicipv4 = Invoke-RestMethod -Method GET -Uri http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip -Headers @{\"Metadata-Flavor\" = \"Google\"} }",
         "  Default { Throw \"Unknown PACKER_BUILDER_TYPE\" } }",
-        "\"[{{build_name}}]\" > C:\\Windows\\Temp\\host",
-        "$publicipv4 >> C:\\Windows\\Temp\\host"
+        "\"[{{build_name}}]\" | Out-File C:\\Windows\\Temp\\host -encoding ascii",
+        "$publicipv4 | Out-File C:\\Windows\\Temp\\host -encoding ascii"
       ]
     },
     {
@@ -200,7 +200,6 @@
         "  azure*) ANSIBLE_USER={{user `azure_winrm_user`}};;",
         "  googlecompute) ANSIBLE_USER={{user `gcp_winrm_user`}};;",
         "esac",
-        "dos2unix poc-base-image-playbook/{{build_name}}-host",
         "ansible-playbook -v -i poc-base-image-playbook/{{build_name}}-host --extra-vars \"ansible_user=$ANSIBLE_USER ansible_password={{.WinRMPassword}} ansible_become_pass={{.WinRMPassword}} ansible_port=5986 ansible_connection=winrm ansible_winrm_server_cert_validation=ignore ansible_winrm_transport=ntlm\" poc-base-image-playbook/main.yml"
       ]
     },
