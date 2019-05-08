@@ -3,15 +3,18 @@
     "aws_access_key": "",
     "aws_secret_key": "",
     "aws_region": "us-east-1",
+    "aws_winrm_user": "Administrator",
     "azure_client_id": "",
     "azure_client_secret": "",
     "azure_storage_account": "",
     "azure_subscription_id": "",
     "azure_resource_group": "",
     "azure_location": "northcentralus",
+    "azure_winrm_user": "packer",
     "gcp_account_file": "",
     "gcp_project_id": "",
-    "gcp_zone": "us-central1-a"
+    "gcp_zone": "us-central1-a",
+    "gcp_winrm_user": "packer"
   },
   "builders": [
     {
@@ -38,7 +41,7 @@
       "user_data_file": "aws_bootstrap_windows.txt",
 
       "communicator": "winrm",
-      "winrm_username": "Administrator",
+      "winrm_username": "{{user `aws_winrm_user`}}",
       "winrm_use_ssl": true,
       "winrm_insecure": true,
       "winrm_use_ntlm": true
@@ -67,7 +70,7 @@
       "user_data_file": "aws_bootstrap_windows.txt",
 
       "communicator": "winrm",
-      "winrm_username": "Administrator",
+      "winrm_username": "{{user `aws_winrm_user`}}",
       "winrm_use_ssl": true,
       "winrm_insecure": true,
       "winrm_use_ntlm": true
@@ -91,7 +94,7 @@
       "managed_image_resource_group_name": "{{user `azure_resource_group`}}",
 
       "communicator": "winrm",
-      "winrm_username": "packer",
+      "winrm_username": "{{user `azure_winrm_user`}}",
       "winrm_use_ssl": true,
       "winrm_insecure": true,
       "winrm_use_ntlm": true
@@ -115,7 +118,7 @@
       "managed_image_resource_group_name": "{{user `azure_resource_group`}}",
 
       "communicator": "winrm",
-      "winrm_username": "packer",
+      "winrm_username": "{{user `azure_winrm_user`}}",
       "winrm_use_ssl": true,
       "winrm_insecure": true,
       "winrm_use_ntlm": true
@@ -139,7 +142,7 @@
         "windows-startup-script-ps1": "Enable-PSRemoting -Force; $Cert = New-SelfSignedCertificate -CertstoreLocation Cert:\\LocalMachine\\My -DnsName \"packer\"; New-Item -Path WSMan:\\LocalHost\\Listener -Transport HTTPS -Address * -CertificateThumbPrint $Cert.Thumbprint -Force; Stop-Service -Name WinRM; Set-Service -Name WinRM -StartupType Automatic; New-NetFirewallRule -DisplayName \"Windows Remote Management (HTTPS-In)\" -Name \"Windows Remote Management (HTTPS-In)\" -Profile Any -LocalPort 5986 -Protocol TCP; Start-Service -Name WinRM"
       },
       "communicator": "winrm",
-      "winrm_username": "packer",
+      "winrm_username": "{{user `gcp_winrm_user`}}",
       "winrm_use_ssl": true,
       "winrm_insecure": true,
       "winrm_use_ntlm": true
@@ -164,7 +167,7 @@
       },
 
       "communicator": "winrm",
-      "winrm_username": "packer",
+      "winrm_username": "{{user `gcp_winrm_user`}}",
       "winrm_use_ssl": true,
       "winrm_insecure": true,
       "winrm_use_ntlm": true
@@ -176,7 +179,7 @@
       "playbook_file": "poc-base-image-playbook/main.yml",
       "extra_arguments": [
         "--connection", "packer",
-        "--extra-vars", "ansible_shell_type=powershell ansible_shell_executable=None"
+        "--extra-vars", "ansible_shell_type=powershell ansible_shell_executable=None ansible_become_pass={{.WinRMPassword}}"
       ]
     },
     {
